@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Threat Log — DeZerra Shield</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a; color: #f1f5f9;
+      padding: 24px; min-height: 100vh; font-size: 13px;
+    }
+    h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .sub { color: #64748b; font-size: 12px; margin-bottom: 24px; }
+    .empty { color: #475569; text-align: center; padding: 48px; }
+    .entry {
+      background: #1e293b; border-radius: 8px; padding: 14px 16px;
+      margin-bottom: 10px; border-left: 3px solid;
+    }
+    .entry.blocked { border-color: #ef4444; }
+    .entry.warned  { border-color: #f59e0b; }
+    .entry-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .entry-verdict {
+      font-size: 11px; font-weight: 600; padding: 2px 8px;
+      border-radius: 10px; text-transform: uppercase;
+    }
+    .entry.blocked .entry-verdict { background: #1c0000; color: #ef4444; }
+    .entry.warned  .entry-verdict { background: #1c1007; color: #f59e0b; }
+    .entry-score { font-size: 11px; color: #64748b; }
+    .entry-time  { font-size: 11px; color: #475569; margin-left: auto; }
+    .entry-url   { font-size: 12px; color: #94a3b8; word-break: break-all; margin-bottom: 6px; }
+    .entry-signals { font-size: 11px; color: #64748b; }
+    .clear-btn {
+      background: #1e293b; border: 1px solid #334155;
+      color: #64748b; padding: 6px 14px; border-radius: 6px;
+      cursor: pointer; font-size: 12px; margin-bottom: 16px;
+    }
+    .clear-btn:hover { color: #ef4444; border-color: #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ Threat Log</h1>
+  <p class="sub">All phishing and suspicious sites detected this session</p>
+  <button class="clear-btn" id="clear-btn">Clear log</button>
+  <div id="log-container"><p class="empty">No threats detected yet.</p></div>
+
+  <script>
+    function load() {
+      chrome.storage.local.get("threatLog", ({ threatLog }) => {
+        const container = document.getElementById("log-container");
+        if (!threatLog || threatLog.length === 0) {
+          container.innerHTML = '<p class="empty">No threats detected yet.</p>';
+          return;
+        }
+        container.innerHTML = threatLog.map(entry => `
+          <div class="entry ${entry.verdict}">
+            <div class="entry-header">
+              <span class="entry-verdict">${entry.verdict}</span>
+              <span class="entry-score">Score: ${entry.score}/100</span>
+              <span class="entry-time">${new Date(entry.time).toLocaleString()}</span>
+            </div>
+            <div class="entry-url">${entry.url}</div>
+            ${entry.signals?.length
+              ? `<div class="entry-signals">${entry.signals.join(" · ")}</div>`
+              : ""}
+          </div>
+        `).join("");
+      });
+    }
+
+    document.getElementById("clear-btn").addEventListener("click", () => {
+      chrome.storage.local.set({ threatLog: [] }, load);
+    });
+
+    load();
+  </script>
+</body>
+</html>

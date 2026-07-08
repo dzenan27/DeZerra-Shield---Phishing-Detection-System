@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DeZerra Shield — Email Scanner</title>
+  <!-- Office.js is required for all Outlook add-ins -->
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a; color: #f1f5f9;
+      padding: 16px; font-size: 13px;
+    }
+    .header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #1e293b; }
+    .header-icon  { font-size: 20px; }
+    .header-title { font-size: 14px; font-weight: 600; }
+    .header-sub   { font-size: 11px; color: #64748b; }
+
+    .scan-btn {
+      width: 100%; padding: 10px; border-radius: 8px;
+      background: #1d4ed8; color: #fff; font-size: 13px;
+      font-weight: 600; cursor: pointer; border: none;
+      margin-bottom: 16px; transition: background 0.15s;
+    }
+    .scan-btn:hover { background: #1e40af; }
+    .scan-btn:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
+
+    .result-card {
+      background: #1e293b; border-radius: 8px;
+      padding: 14px; border-left: 3px solid #334155;
+      margin-bottom: 12px; display: none;
+    }
+    .result-card.safe    { border-color: #22c55e; }
+    .result-card.warned  { border-color: #f59e0b; }
+    .result-card.blocked { border-color: #ef4444; }
+
+    .result-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .result-icon   { font-size: 18px; }
+    .result-title  { font-size: 14px; font-weight: 600; }
+    .result-title.safe    { color: #22c55e; }
+    .result-title.warned  { color: #f59e0b; }
+    .result-title.blocked { color: #ef4444; }
+
+    .result-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; margin-bottom: 10px; }
+
+    .detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #0f172a; font-size: 12px; }
+    .detail-label { color: #64748b; }
+    .detail-value { color: #cbd5e1; text-align: right; max-width: 60%; word-break: break-all; }
+
+    .links-section { margin-top: 12px; }
+    .links-title { font-size: 10px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .link-item { font-size: 11px; color: #94a3b8; padding: 3px 0; word-break: break-all; }
+    .link-item.suspicious { color: #f59e0b; }
+
+    .status { font-size: 12px; color: #64748b; text-align: center; padding: 16px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="header-icon">🛡️</span>
+    <div>
+      <div class="header-title">DeZerra Shield</div>
+      <div class="header-sub">Email Threat Scanner</div>
+    </div>
+  </div>
+
+  <button class="scan-btn" id="scan-btn">Scan this email</button>
+
+  <div id="result-card" class="result-card">
+    <div class="result-header">
+      <span class="result-icon" id="result-icon">✓</span>
+      <span class="result-title" id="result-title">Safe</span>
+    </div>
+    <div class="result-desc" id="result-desc"></div>
+    <div id="details"></div>
+    <div class="links-section" id="links-section" style="display:none">
+      <div class="links-title">Links found in email</div>
+      <div id="links-list"></div>
+    </div>
+  </div>
+
+  <div class="status" id="status">Open an email and click "Scan this email".</div>
+
+  <script src="taskpane.js"></script>
+</body>
+</html>
