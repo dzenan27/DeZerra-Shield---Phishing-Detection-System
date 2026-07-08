@@ -81,10 +81,13 @@ These checks run in under 1ms and catch threats that haven't reached threat inte
 | 0–39  | Safe | Silent pass |
 | 40–79 | Warned | Warning banner injected via Shadow DOM |
 | 80–100 | Blocked | Full-page block interstitial |
+###
+###
+# Example Video Walk-Through:
 
-## Example Video Walk-Through:
+###
 
-
+https://github.com/user-attachments/assets/ba3a1938-1c29-46c5-ac61-89863b19aded
 
 ---
 
